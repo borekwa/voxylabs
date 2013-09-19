@@ -1,0 +1,143 @@
+html {
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+body {
+  padding-top: 20px;
+  background: transparent;
+}
+body.background {
+  background: url(img/waterfall.jpg) no-repeat center center fixed;
+}
+.btn-xs i {
+  font-size: 16px;
+  color: #302d68;
+}
+.admin-link i {
+  color: #565286;
+  font-size: 12px;
+}
+.admin-link {
+  font-size: 12px;
+}
+.transparent {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+.widget-experiment {
+  height: 140px;
+}
+.widget-experiment:hover {
+  border: 5px solid #e1f0f6;
+  cursor: pointer;
+}
+.widget-experiment i {
+  color: #3d3a69;
+}
+.widget-experiment .hdr {
+  font-weight: bold;
+}
+.panel-comment p {
+  font-style: italic;
+}
+#panel-login {
+  height: 420px;
+}
+.panel.panel-labs {
+  border: 0px;
+}
+.panel-labs:hover {
+  color: aqua;
+}
+.panel-primary > .panel-heading {
+  background-color: #3d3a69;
+  background-image: none;
+}
+#admin-experiment-list i {
+  font-size: 18px;
+}
+.badge-positive {
+  background-color: #5fce30;
+  font-size: 24px;
+}
+.badge-negative {
+  background-color: red;
+  font-size: 24px;
+}
+#most-liked-videos .badge-negative {
+  background-color: gray;
+  font-size: 10px;
+}
+#least-liked-videos .badge-positive {
+  background-color: gray;
+  font-size: 10px;
+}
+.margin-base-vertical {
+  margin: 40px 0;
+}
+#goto-live-labs {
+  margin-top: 25px;
+}
+.video-modal-card > .clip {
+  height: 60px;
+}
+.video-modal-card > p {
+  height: 60px;
+}
+.thanks {
+  padding-top: 4em;
+  height: 120px;
+}
+/*utility css*/
+.bump-down-5 {
+  margin: 5px 0 0 0;
+}
+.bump-up-5 {
+  margin: 0 0 5px 0;
+}
+.bump-left-5 {
+  margin: 0 5px 0 0;
+}
+.bump-right-5 {
+  margin-left: 0 0 0 5px;
+}
+.bump-down-10 {
+  margin: 10px 0 0 0;
+}
+.bump-up-10 {
+  margin: 0 0 10px 0;
+}
+.bump-left-10 {
+  margin: 0 10px 0 0;
+}
+.bump-right-10 {
+  margin: 0 0 0 10px;
+}
+.bump-down-20 {
+  margin: 20px 0 0 0;
+}
+.bump-up-20 {
+  margin: 0 0 20px 0;
+}
+.bump-left-20 {
+  margin: 0 20px 0 0;
+}
+.bump-right-20 {
+  margin: 0 0 0 20px;
+}
+.bump-down-40 {
+  margin: 40px 0 0 0;
+}
+.bump-up-10 {
+  margin: 0 0 40px 0;
+}
+.bump-left-10 {
+  margin: 0 40px 0 0;
+}
+.bump-right-40 {
+  margin: 0 0 0 40px;
+}
+.vertical-align {
+  vertical-align: middle;
+}

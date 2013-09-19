@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+	
+	 	<title>Voxy Labs - Admin</title>
+	 	<meta name="description" content="The testing grounds for the most innovative language learning product in the world!">
+	 	<meta name="viewport" content="width=device-width">
+		<link href="http://d1t5bup2xhhy7o.cloudfront.net/static_78d8f06b67935d3f99f8754e5f0950cc/img/favicon.ico" rel="icon" type="image/x-icon">
+	 	
+	 	<!--CSS-->
+	 	<!--Voxy CSS-->
+	 	<link rel="stylesheet" href="http://d1t5bup2xhhy7o.cloudfront.net/static_48d2da37bdf402702ab64558e3ad1634/css/guide.css" type="text/css">
+	 	<link rel="stylesheet" href="css/labs.css" type="text/css">
+	 	
+	 	<!--3rd party CSS-->
+	 	<link rel="stylesheet" href="css/reset.css">
+	 	<link rel="stylesheet" href="css/styles.css">
+		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css"> <!--optional theme-->
+		
+		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+		Remove this if you use the .htaccess -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	</head>
+
+	<body>
+		<div class="container-fluid col-md-12">
+			<h1>Upload Video</h1>
+			<div class="col-md-6 col-md-offset-3">
+				<form role="form">
+					<div class="form-group">
+						<input class="input-lg form-control" id="video-url-input" placeholder="video url">
+					</div>
+					
+					<div class="form-group">
+						<input class="input-lg form-control" id="video-title-input" placeholder="title">
+					</div>
+					
+					<div class="form-group">
+						<input class="input-lg form-control" id="video-description-input" placeholder="description">
+					</div>
+					
+					<div class="form-group">
+						<button class="btn btn-lg btn-block btn-primary" id="upload-video-btn">Upload</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		
+		<!--Javascript files-->
+		<!--3rd party javascript-->  
+	 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script type="text/javascript" src="http://underscorejs.org/underscore.js"></script>
+		<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.2.9.min.js"></script>
+	
+		<!--application javascript files-->
+	 	<script type="text/javascript" src="js/models.js"></script>
+	 	<script type="text/javascript" src="js/models.js"></script>
+	 	<script type="text/javascript" src="js/views.js"></script>
+	 	<script type="text/javascript" src="js/main.js"></script>
+	</body>
+</html>

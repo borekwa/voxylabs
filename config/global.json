@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "Voxy Labs": {
+            "applicationId": "dUvUFnSWHPhwoLyhu6a4wlrsxF0Hu5JDRorzUBGC", 
+            "masterKey": "qENnxmtXQoZdnjitm7sMPsFb4Ug9nymIvviZ3GNN"
+        }, 
+        "_default": {
+            "link": "Voxy Labs"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.2.9"
+    }
+}

@@ -13,7 +13,7 @@
     return Parse.User.logIn(email, password, {
       success: function(user) {
         console.log("successfully logged in!");
-        return window.location.replace("admin.html");
+        return window.location.replace("labs.html#admin/dashboard");
       },
       error: function(user, error) {
         return console.log("login failed");
@@ -33,7 +33,7 @@
     return user.signUp(null, {
       success: function(user) {
         console.log("a new user signed up");
-        return window.location.replace("admin.html");
+        return window.location.replace("labs.html#admin/dashboard");
       },
       error: function(user, error) {
         return console.log("the following error occurred " + error);

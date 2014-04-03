@@ -4,6 +4,8 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
+  Parse.initialize("dUvUFnSWHPhwoLyhu6a4wlrsxF0Hu5JDRorzUBGC", "l5cOwMTe96qJ5VmTVjU8K9GByQ9nDUdUMj91b5PD");
+
   Router = (function(_super) {
     __extends(Router, _super);
 
@@ -14,11 +16,11 @@
 
     Router.prototype.routes = {
       "": "home",
-      "upload": "uploadVideo",
+      "admin/video-upload": "uploadVideo",
+      "admin/video-results": "videoResults",
+      "admin/video-results/video-feedback/:id": "videoFeedback",
+      "admin/dashboard": "admin",
       "videos": "videoExperiment",
-      "video-results": "videoResults",
-      "video-feedback/:id": "videoFeedback",
-      "admin": "admin",
       "speaking": "speakingSurvey"
     };
 
@@ -28,7 +30,11 @@
     };
 
     Router.prototype.uploadVideo = function() {
-      var uploadVideoView;
+      var currentUser, uploadVideoView;
+      currentUser = Parse.User.current();
+      if (currentUser === null) {
+        window.location.replace("admin-login.html");
+      }
       return uploadVideoView = new UploadVideoView();
     };
 
@@ -38,12 +44,20 @@
     };
 
     Router.prototype.videoResults = function() {
-      var videoResultsView;
+      var currentUser, videoResultsView;
+      currentUser = Parse.User.current();
+      if (currentUser === null) {
+        window.location.replace("admin-login.html");
+      }
       return videoResultsView = new VideoResultsCollectionView();
     };
 
     Router.prototype.videoFeedback = function(id) {
-      var query;
+      var currentUser, query;
+      currentUser = Parse.User.current();
+      if (currentUser === null) {
+        window.location.replace("admin-login.html");
+      }
       query = new Parse.Query(Video);
       return query.get(id, {
         success: function(video) {
@@ -56,7 +70,11 @@
     };
 
     Router.prototype.admin = function() {
-      var query;
+      var currentUser, query;
+      currentUser = Parse.User.current();
+      if (currentUser === null) {
+        window.location.replace("admin-login.html");
+      }
       query = new Parse.Query(Video);
       return query.find({
         success: function(results) {
@@ -104,17 +122,15 @@
 
     Video.prototype.defaults = {
       "likes": 0,
-      "dislikes": 0
+      "dislikes": 0,
+      "startTime": 0
     };
 
-    Video.prototype.uploadVideo = function(video, title, description, videoUrl) {
-      video = video;
-      title = title;
-      description = description;
-      videoUrl = videoUrl;
+    Video.prototype.uploadVideo = function(video, title, description, videoUrl, startTime) {
       video.set("title", title);
       video.set("description", description);
       video.set("videoUrl", videoUrl);
+      video.set("startTime", startTime);
       return video.save(null, {
         success: function(video) {
           return alert("video saved!");
@@ -243,17 +259,24 @@
 
     AdminView.prototype.events = {
       "click #upload-video-link": "goToUpload",
-      "click #video-experiment-widget": "goToVideoResults"
+      "click #video-experiment-widget": "goToVideoResults",
+      "click #log-out": "logOut"
     };
 
     AdminView.prototype.goToUpload = function(e) {
       e.preventDefault();
-      return router.navigate("upload", true);
+      return router.navigate("admin/video-upload", true);
     };
 
     AdminView.prototype.goToVideoResults = function(e) {
       e.preventDefault();
-      return router.navigate("video-results", true);
+      return router.navigate("admin/video-results", true);
+    };
+
+    AdminView.prototype.logOut = function(e) {
+      e.preventDefault();
+      Parse.User.logOut();
+      return window.location.replace("admin-login.html");
     };
 
     return AdminView;
@@ -284,18 +307,57 @@
     };
 
     UploadVideoView.prototype.events = {
-      "click #upload-video-btn": "uploadVideo"
+      "click #upload-video-btn": "uploadVideo",
+      "keyup #video-description-input": "countDescriptionCharacters",
+      "keyup #video-title-input": "countTitleCharacters"
     };
 
     UploadVideoView.prototype.uploadVideo = function(e) {
-      var description, title, video, videoUrl;
+      var description, startTime, title, video, videoUrl;
       e.preventDefault();
       video = new Video;
       title = $("#video-title-input").val();
       description = $("#video-description-input").val();
       videoUrl = $("#video-url-input").val();
-      video.uploadVideo(video, title, description, videoUrl);
-      return router.navigate("upload", true);
+      startTime = $("#video-start-time-input").val();
+      video.uploadVideo(video, title, description, videoUrl, startTime);
+      return router.navigate("admin/video-upload", true);
+    };
+
+    UploadVideoView.prototype.countTitleCharacters = function(e) {
+      var count, max;
+      e.preventDefault();
+      max = 58;
+      count = $("#video-title-input").val().length;
+      $("#video-title-characters").text(max - count);
+      if (max - count < 0) {
+        $("#video-title-characters").css({
+          "color": "red"
+        });
+      }
+      if (max - count > 0) {
+        return $("#video-title-characters").css({
+          "color": ""
+        });
+      }
+    };
+
+    UploadVideoView.prototype.countDescriptionCharacters = function(e) {
+      var count, max;
+      e.preventDefault();
+      max = 108;
+      count = $("#video-description-input").val().length;
+      $("#video-description-characters").text(max - count);
+      if (max - count < 0) {
+        $("#video-description-characters").css({
+          "color": "red"
+        });
+      }
+      if (max - count > 0) {
+        return $("#video-description-characters").css({
+          "color": ""
+        });
+      }
     };
 
     return UploadVideoView;
@@ -402,6 +464,9 @@
     VideoCollectionView.prototype.el = "#container";
 
     VideoCollectionView.prototype.initialize = function() {
+      this.collection.reset(this.collection.shuffle(), {
+        silent: true
+      });
       return this.render();
     };
 
@@ -618,7 +683,7 @@
       var id;
       e.preventDefault();
       id = this.model.id;
-      return router.navigate("video-feedback/" + id, true);
+      return router.navigate("admin/video-results/video-feedback/" + id, true);
     };
 
     return VideoModelResultsView;
@@ -721,6 +786,17 @@
       var template;
       template = _.template(this.template);
       return this.$el.html(template);
+    };
+
+    SpeakingSurveyView.prototype.events = function() {
+      return {
+        "change input": "changeRadio"
+      };
+    };
+
+    SpeakingSurveyView.prototype.changeRadio = function(e) {
+      e.preventDefault();
+      return $(e.target).parent.addClass("bright-purple");
     };
 
     return SpeakingSurveyView;

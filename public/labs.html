@@ -17,6 +17,8 @@
 
 	 	<!--Voxy CSS-->
 	 	<link rel="stylesheet" href="http://d1t5bup2xhhy7o.cloudfront.net/static_48d2da37bdf402702ab64558e3ad1634/css/guide.css" type="text/css">
+	 	<link rel="stylesheet" href="http://d1t5bup2xhhy7o.cloudfront.net/static_a336cb6fcfd37090bf83624b84c9377b/css/activity_workspace.css" type="text/css"/>
+	 	<link rel="stylesheet" href="http://d1t5bup2xhhy7o.cloudfront.net/static_a336cb6fcfd37090bf83624b84c9377b/css/personalize.css" type="text/css"/>
 	 	<link rel="stylesheet" href="css/labs.css" type="text/css">	 	
 		
 		<!--FONTS CSS-->
@@ -43,7 +45,7 @@
 					<h3 class="bump-down-20"><strong>Voxy Labs</strong> is where we experiment with new ideas to make Voxy even more effective at teaching languages; tell us which ideas you like and we'll build them into your course!</h3>
 				</div>
 				<div class="col-md-2">
-					<a href="labs.html#admin" class="admin-link pull-right">Admin Login <i class="icon-edit"></i></a>
+					<a href="labs.html#admin/dashboard" class="admin-link pull-right">Admin <i class="icon-edit"></i></a>
 				</div>
 			</div>
 
@@ -107,27 +109,27 @@
 			</div>
 			
 			<div class="col-md-12" id="admin-body">
-				<div class="col-md-8">
+				<div class="col-md-8 col-xs-12">
 					<h4 class="pull-left bump-up-20">Active Experiments</h4>
 				</div>
 				
-				<div class="col-md-4">
+				<div class="col-md-4 col-xs-12">
 					<h4 class="pull-left">Comments from Users</h4>
 				</div>
 				
-				<div class="col-md-8">
+				<div class="col-md-8 col-xs-12">
 					<ul class="list-group" id="admin-experiment-list">
-						<li class="list-group-item widget widget-experiment col-md-12 text-left" id="video-experiment-widget">
+						<li class="list-group-item widget widget-experiment col-md-12 col-xs-12 text-left" id="video-experiment-widget">
 							<h2 class="hdr">Video Hot-or-not</h2>
 							<span class="badge badge-negative pull-right"><%= totalDislikes %></span>
 							<span class="badge badge-positive pull-right"><%= totalLikes %></span>
 						</li>
 						
-						<li class="list-group-item widget widget-experiment col-md-12 text-left">
+						<li class="list-group-item widget widget-experiment col-md-12 col-xs-12 text-left">
 							<h2 class="hdr">Auto-Speech Feedback Survey</h2>
 						</li>
 						
-						<li class="list-group-item  widget widget-experiment col-md-12 text-left">
+						<li class="list-group-item  widget widget-experiment col-md-12 col-xs-12 text-left">
 							<h2 class="hdr">Notifications Survey</h2>
 						</li>
 					</ul>
@@ -152,23 +154,25 @@
 			<div class="col-md-6 col-md-offset-3">
 				<form role="form">
 					<div class="form-group">
-						<input class="input-lg form-control" id="video-url-input" placeholder="embed URL">
+						<input type="url" class="input-lg form-control" id="video-url-input" placeholder="embed URL">
 					</div>
 					
 					<div class="form-group">
-						<input class="input-lg form-control" id="video-title-input" placeholder="title">
+						<input type="text" class="input-lg form-control" id="video-title-input" placeholder="title">
+						<span class="text-left row help-block">Characters: 
+							<span id="video-title-characters">58</span>
+						</span>
 					</div>
 					
 					<div class="form-group">
-						<input class="input-lg form-control" id="video-description-input" placeholder="description">
+						<input type="text" class="input-lg form-control" id="video-description-input" placeholder="description">
+						<span class="text-left row help-block">Characters: 
+							<span id="video-description-characters">108</span>
+						</span>							
 					</div>
 					
 					<div class="form-group">
-						<input class="input-lg form-control" id="video-start-time" placeholder="start time (in seconds)">
-					</div>
-					
-					<div class="form-group">
-						<input class="input-lg form-control" id="video-stop-time" placeholder="stop time (in seconds)">
+						<input class="input-lg form-control" id="video-start-time-input" placeholder="start time (in seconds)">
 					</div>
 					
 					<div class="form-group">
@@ -192,7 +196,8 @@
 				<div class="thumbnail video-modal-card bump-down-20">
 					<h4 class="clip"><%= title %></h4>
 					<div class="col-md-12">
-						<iframe width="220" height="165" src="<%= videoUrl %>?origin=http//voxylabs.parseapp.com&start=null&end=null" frameborder="0" allowfullscreen></iframe>
+						<iframe src="<%= videoUrl %>?time=<%= startTime %>" allowtransparency="true" frameborder="0" scrolling="no" class="wistia_embed" name="wistia_embed" width="100%" height="165"></iframe>
+						<!--YOUTUBE iframe--><!--<iframe width="100%" height="165" src="http://<%= videoUrl %>?origin=http//voxylabs.parseapp.com&start=<%= startTime %>" frameborder="0" allowfullscreen></iframe>-->
 					</div>
 					<p><%= description %></p>
 					<div class="col-md-12 row-fluid margin-base-vertical like-dislike">
@@ -267,37 +272,58 @@
 
 		<!--Speaking Survey Template-->
 		<script type="text/template" id="speaking-survey-template">
-			<div class="col-md-12 margin-base-vertical">
-				<h1>Speaking Survey</h1>
+			<div class="col-md-12">
+				<h1 class="margin-base-vertical">Speaking Survey</h1>
 				<h4>Which of the following ways to practice speaking do you prefer?</h4>
 			</div>
 			
-			<div class="col-md-12 row">
-				<div class="col-md-4 panel panel-primary panel-labs">
-					<div class="panel-heading"><strong>Computer Scored speaking practice</strong></div>
-					<div class="panel-body">
-						<p class="text-left">Practice speaking in private on your phone and a computer will analyze your pronunciation and tell you which part of the word you need to practice.</p>
-					</div>
+			<form role="form" class="col-md-6 col-md-offset-3" id="speaking-survey">
+				<div class="radio">
+					<label class="col-md-12">
+						<div class="row">
+							<input type="radio" class="col-md-1" id="speaking-asr" name="speaking" value="speaking-asr">
+							<div class="col-md-1">
+								<i class="icon-microphone icon4x pull-left"></i>
+							</div>
+							<div class="col-md-10">
+								<p class="text-left">Practice speaking in private on your phone and a computer will analyze your pronunciation and tell you which part of the word you need to practice.</p>
+							</div>
+						</div>
+					</label>
 				</div>
 				
-				<div class="col-md-4 panel panel-primary panel-labs">
-					<div class="panel-heading"><strong>Record and Submit Speech for Grading by a Native Tutor</strong></div>
-					<div class="panel-body">
-						<p class="text-left">Practice speaking in private and submit your speech samples to Native Tutors, who will send you an explanation of what you can do to speak better.</p>
-					</div>
+				<div class="radio">
+					<label class="col-md-12">
+						<div class="row">
+							<input type="radio" class="col-md-1" id="speaking-async" name="speaking" value="speaking-async">
+							<div class="col-md-1">
+								<i class="icon-paperclip icon4x pull-left"></i>
+							</div>
+							<div class="col-md-10">
+								<p class="text-left">Practice speaking in private and submit your speech samples to native tutors, who will send you an explanation of what you can do to speak better.</p>
+							</div>
+						</div>
+					</label>
 				</div>
 				
-				<div class="col-md-4 panel panel-primary panel-labs">
-					<div class="panel-heading"><strong>Live Video Chat with a Native Tutor</strong></div>
-					<div class="panel-body">
-						<p class="text-left">Practice speaking with a Native tutor in a one-on-one video chat.</p>
-					</div>
+				<div class="radio">
+					<label class="col-md-12">
+						<div class="row">
+							<input type="radio" class="col-md-1" id="speaking-live" name="speaking" value="speaking-live">
+							<div class="col-md-1">
+								<i class="icon-facetime-video icon4x pull-left"></i>
+							</div>
+							<div class="col-md-10">
+								<p class="text-left">Practice speaking with a native tutor in a one-on-one video chat.</p>
+							</div>
+						</div>
+					</label>
 				</div>
-			</div>
+			</form>
 			
 			<div class="col-md-12">
 				<div class="col-md-6 col-md-offset-3">
-					<button class="btn btn-large btn-success btn-block">Submit</button>
+					<button class="btn btn-large btn-success btn-block">Vote</button>
 				</div>
 			</div>
 		</script>		

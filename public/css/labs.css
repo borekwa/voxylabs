@@ -22,6 +22,13 @@ body.background {
 .admin-link {
   font-size: 12px;
 }
+#speaking-survey input {
+  margin-top: 15px;
+}
+.bright-purple {
+  color: #8d3ec5;
+  background-color: #8d3ec5;
+}
 .transparent {
   background-color: rgba(255, 255, 255, 0.9);
 }
@@ -89,6 +96,7 @@ body.background {
   padding-top: 4em;
   height: 120px;
 }
+
 /*utility css*/
 .bump-down-5 {
   margin: 5px 0 0 0;

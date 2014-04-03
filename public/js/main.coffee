@@ -1,3 +1,4 @@
+Parse.initialize "dUvUFnSWHPhwoLyhu6a4wlrsxF0Hu5JDRorzUBGC", "l5cOwMTe96qJ5VmTVjU8K9GByQ9nDUdUMj91b5PD"
 
 #Router, Models, Views and events for the Voxy Labs application
 
@@ -5,26 +6,38 @@
 class Router extends Parse.Router
   routes:
     "": "home"
-    "upload": "uploadVideo"
+    "admin/video-upload": "uploadVideo"
+    "admin/video-results": "videoResults"
+    "admin/video-results/video-feedback/:id": "videoFeedback"
+    "admin/dashboard": "admin"
     "videos": "videoExperiment"
-    "video-results": "videoResults"
-    "video-feedback/:id": "videoFeedback"
-    "admin": "admin"
     "speaking": "speakingSurvey"
   home: ->
     homeView = new HomeView()
   uploadVideo: ->
+    currentUser = Parse.User.current()
+    if currentUser is null
+      window.location.replace "admin-login.html"
     uploadVideoView = new UploadVideoView()
   videoExperiment: ->
     videoExperimentView = new VideoExperimentView()
   videoResults: ->
+    currentUser = Parse.User.current()
+    if currentUser is null
+      window.location.replace "admin-login.html"
     videoResultsView = new VideoResultsCollectionView()
   videoFeedback: (id) ->
+    currentUser = Parse.User.current()
+    if currentUser is null
+      window.location.replace "admin-login.html"
     query = new Parse.Query(Video)
     query.get id,
       success: (video) ->
         videoFeedbackView = new VideoFeedbackView(model:video)
   admin: ->
+    currentUser = Parse.User.current()
+    if currentUser is null
+      window.location.replace "admin-login.html"
     query = new Parse.Query(Video)
     query.find
       success: (results) ->
@@ -52,21 +65,17 @@ class Video extends Parse.Object
   defaults:
     "likes": 0
     "dislikes": 0
-    "startTime": null,
-    "stopTime": null,
-  uploadVideo: (video, title, description, videoUrl) ->
-    video = video
-    title = title
-    description = description
-    videoUrl = videoUrl
+    "startTime": 0,
+  uploadVideo: (video, title, description, videoUrl, startTime) ->
     video.set "title", title
     video.set "description", description
     video.set "videoUrl", videoUrl
+    video.set "startTime", startTime
     video.save null,
       success: (video) ->
         alert "video saved!"
       error: (video, error) ->
-        alert "Error uploading the video: #{error}"
+        alert "Error uploading the video: "+error
   likeVideo: ->
     @increment "likes"
     @save null,
@@ -130,13 +139,18 @@ class AdminView extends Parse.View
   events:
     "click #upload-video-link": "goToUpload"
     "click #video-experiment-widget": "goToVideoResults"
+    "click #log-out": "logOut"
   goToUpload: (e) ->
     e.preventDefault()
-    router.navigate "upload", true
+    router.navigate "admin/video-upload", true
   goToVideoResults: (e) ->
     e.preventDefault()
-    router.navigate "video-results", true
-
+    router.navigate "admin/video-results", true
+  logOut: (e) ->
+    e.preventDefault()
+    Parse.User.logOut()
+    window.location.replace "admin-login.html"
+    
 class UploadVideoView extends Parse.View
   el: "#admin-body"
   template: $("#upload-video-template").html()
@@ -148,14 +162,31 @@ class UploadVideoView extends Parse.View
     $("#video-url-input").focus()
   events:
     "click #upload-video-btn": "uploadVideo"
+    "keyup #video-description-input": "countDescriptionCharacters"
+    "keyup #video-title-input": "countTitleCharacters"
   uploadVideo: (e) ->
     e.preventDefault()
     video = new Video
     title = $("#video-title-input").val()
     description = $("#video-description-input").val()
     videoUrl = $("#video-url-input").val()
-    video.uploadVideo(video, title, description, videoUrl)
-    router.navigate "upload", true
+    startTime = $("#video-start-time-input").val()
+    video.uploadVideo(video, title, description, videoUrl, startTime)
+    router.navigate "admin/video-upload", true
+  countTitleCharacters: (e) ->
+    e.preventDefault()
+    max = 58
+    count = $("#video-title-input").val().length
+    $("#video-title-characters").text(max-count)
+    $("#video-title-characters").css "color":"red" if max-count < 0
+    $("#video-title-characters").css "color":"" if max-count > 0
+  countDescriptionCharacters: (e) ->
+    e.preventDefault()
+    max = 108
+    count = $("#video-description-input").val().length
+    $("#video-description-characters").text(max-count)
+    $("#video-description-characters").css "color":"red" if max-count < 0
+    $("#video-description-characters").css "color":"" if max-count > 0   
     
 class VideoCollection extends Parse.Collection
   model: Video
@@ -193,6 +224,8 @@ class VideoExperimentView extends Parse.View
 class VideoCollectionView extends Parse.View
   el: "#container"
   initialize: ->
+    @collection.reset @collection.shuffle(),
+      silent: true
     @render()
   render: ->
     @collection.each ((video) ->
@@ -293,7 +326,7 @@ class VideoModelResultsView extends Parse.View
   goToVideoFeedback: (e) ->
     e.preventDefault()
     id = @model.id 
-    router.navigate "video-feedback/"+id, true
+    router.navigate "admin/video-results/video-feedback/"+id, true
     
 class VideoFeedbackView extends Parse.View
   el: "#admin-body"
@@ -336,6 +369,11 @@ class SpeakingSurveyView extends Parse.View
   render: ->
     template = _.template(@template)
     @$el.html template
+  events: ->
+    "change input":"changeRadio"
+  changeRadio: (e) ->
+    e.preventDefault()
+    $(e.target).parent.addClass "bright-purple"
   
 router = new Router
 Parse.history.start()

@@ -119,6 +119,11 @@
 				
 				<div class="col-md-8 col-xs-12">
 					<ul class="list-group" id="admin-experiment-list">
+						<li id="ling-ping-widget" class="list-group-item  widget widget-experiment col-md-12 col-xs-12 text-left">
+							<h2 class="hdr">LingPing</h2>
+							<p>Send SMS messages to learners</p>
+						</li>
+						
 						<li class="list-group-item widget widget-experiment col-md-12 col-xs-12 text-left" id="video-experiment-widget">
 							<h2 class="hdr">Video Hot-or-not</h2>
 							<span class="badge badge-negative pull-right"><%= totalDislikes %></span>
@@ -127,10 +132,6 @@
 						
 						<li class="list-group-item widget widget-experiment col-md-12 col-xs-12 text-left">
 							<h2 class="hdr">Auto-Speech Feedback Survey</h2>
-						</li>
-						
-						<li class="list-group-item  widget widget-experiment col-md-12 col-xs-12 text-left">
-							<h2 class="hdr">Notifications Survey</h2>
 						</li>
 					</ul>
 				</div>
@@ -144,6 +145,33 @@
 						<p>feed comments here</p>
 						<p>feed comments here</p>
 					</div>
+				</div>
+			</div>
+		</script>
+		
+		<!--send SMS template-->
+		<script type="text/template" id="send-sms-template">
+			<h1 class="margin-base-vertical">LingPing</h1>
+			<div class="container">
+				<p class="text-left">Send SMS messages to users.  Enter phone numbers in the input below (no dashes or other symbols), comma-separated.  Type your message in and viola</p>
+				<div class="form col-md-6 col-md-offset-3">
+					<h3>Send SMS Form</h3>
+					<div class="form-group">
+						<label class="text-left" for="campaign-name">Campaign Name</label>
+						<input type="text" class="form-control" id="campaign-name" placeholder="Fala melhor agora">
+					</div>
+					<div class="form-group">
+						<label class="text-left" for="phone-number">Phone Number</label>
+						<textarea class="form-control" id="numbers-input" placeholder="8675309"></textarea>
+					</div>
+					<div class="form-group">
+						<label class="text-left" for="sms-message-input">Message</label>
+						<textarea class="form-control" rows="5" id="sms-message-input" placeholder="Enter your message..."></textarea>
+						<span class="text-left row help-block">Characters: 
+							<span id="sms-msg-characters">140</span>
+						</span>				
+					</div>
+					<button id="send-sms-btn" class="pull-left btn btn-primary btn-large col-md-6">Send SMS</button>
 				</div>
 			</div>
 		</script>

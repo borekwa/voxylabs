@@ -10,6 +10,7 @@ class Router extends Parse.Router
     "admin/video-results": "videoResults"
     "admin/video-results/video-feedback/:id": "videoFeedback"
     "admin/dashboard": "admin"
+    "admin/lingping": "sendSms"
     "videos": "videoExperiment"
     "speaking": "speakingSurvey"
   home: ->
@@ -57,6 +58,8 @@ class Router extends Parse.Router
         adminView = new AdminView(videoExperimentData: videoExperimentData)
   speakingSurvey: ->
     speakingSurveyView = new SpeakingSurveyView()
+  sendSms: ->
+    sendSmsView = new SendSmsView()
   
 #declare relevant Models (aka Parse.Objects)
 
@@ -139,6 +142,7 @@ class AdminView extends Parse.View
   events:
     "click #upload-video-link": "goToUpload"
     "click #video-experiment-widget": "goToVideoResults"
+    "click #ling-ping-widget": "goToLingPing"
     "click #log-out": "logOut"
   goToUpload: (e) ->
     e.preventDefault()
@@ -146,6 +150,9 @@ class AdminView extends Parse.View
   goToVideoResults: (e) ->
     e.preventDefault()
     router.navigate "admin/video-results", true
+  goToLingPing: (e) ->
+    e.preventDefault()
+    router.navigate "admin/lingping", true
   logOut: (e) ->
     e.preventDefault()
     Parse.User.logOut()
@@ -374,6 +381,38 @@ class SpeakingSurveyView extends Parse.View
   changeRadio: (e) ->
     e.preventDefault()
     $(e.target).parent.addClass "bright-purple"
+    
+class SendSmsView extends Parse.View
+  el: "#container"
+  template: $("#send-sms-template").html()
+  initialize: ->
+    @render()
+  render: ->
+    template = _.template(@template)
+    @$el.html template
+  events: ->
+    "keyup #sms-message-input":"countMsgCharacters"
+    "click #send-sms-btn":"sendSms"
+  countMsgCharacters: (e) ->
+    e.preventDefault()
+    max = 140
+    count = $("#sms-message-input").val().length
+    $("#sms-msg-characters").text(max-count)
+    $("#sms-msg-characters").css "color":"red" if max-count < 0
+    $("#sms-msg-characters").css "color":"" if max-count > 0
+  sendSms: (e) ->
+    e.preventDefault()
+    message = $("#sms-message-input").val()
+    numbers = $("#numbers-input").val()
+    Parse.Cloud.run "sendTwilioMsg",
+      campaignName: "this"
+      numbers: numbers
+      message: message
+    ,
+      success: (response)->
+        console.log response
+      error: (error) ->
+        console.log "cloud error: "+error.code+": "+error.message
   
 router = new Router
 Parse.history.start()

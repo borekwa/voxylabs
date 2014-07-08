@@ -396,7 +396,7 @@ class SendSmsView extends Parse.View
     "click #send-sms-btn":"sendSms"
   countMsgCharacters: (e) ->
     e.preventDefault()
-    max = 140
+    max = 160
     count = $("#sms-message-input").val().length
     $("#sms-msg-characters").text(max-count)
     $("#sms-msg-characters").css "color":"red" if max-count < 0

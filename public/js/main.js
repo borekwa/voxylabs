@@ -848,7 +848,7 @@
     SendSmsView.prototype.countMsgCharacters = function(e) {
       var count, max;
       e.preventDefault();
-      max = 140;
+      max = 160;
       count = $("#sms-message-input").val().length;
       $("#sms-msg-characters").text(max - count);
       if (max - count < 0) {

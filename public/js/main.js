@@ -834,7 +834,8 @@
     SendSmsView.prototype.render = function() {
       var template;
       template = _.template(this.template);
-      return this.$el.html(template);
+      this.$el.html(template);
+      return $("#sms-error").hide();
     };
 
     SendSmsView.prototype.events = function() {
@@ -855,7 +856,7 @@
           "color": "red"
         });
       }
-      if (max - count > 0) {
+      if (max - count >= 0) {
         return $("#sms-msg-characters").css({
           "color": ""
         });
@@ -863,22 +864,83 @@
     };
 
     SendSmsView.prototype.sendSms = function(e) {
-      var message, numbers;
+      var array, errors, file, i, message, numbers, reader, successes, _results;
       e.preventDefault();
+      confirm("Are you sure you want to send this SMS message to all specified learners?  This cannot be stopped or undone and charges will be incurred.");
+      file = $("#csv-input").get(0).files[0];
       message = $("#sms-message-input").val();
-      numbers = $("#numbers-input").val();
-      return Parse.Cloud.run("sendTwilioMsg", {
-        campaignName: "this",
-        numbers: numbers,
-        message: message
-      }, {
-        success: function(response) {
-          return console.log(response);
-        },
-        error: function(error) {
-          return console.log("cloud error: " + error.code + ": " + error.message);
+      if (file) {
+        reader = new FileReader();
+        reader.readAsText(file);
+        return reader.onload = function(e) {
+          var csvArrays, errors, i, number, successes, _results;
+          csvArrays = $.csv.toArrays(e.target.result);
+          i = 1;
+          successes = 0;
+          errors = 0;
+          _results = [];
+          while (i < csvArrays.length) {
+            number = csvArrays[i][0];
+            Parse.Cloud.run("sendTwilioMsg", {
+              number: number,
+              message: message
+            }, {
+              success: function(response) {
+                $("#sms-error").hide();
+                successes++;
+                $("#success-count").html(successes);
+                $("#message-log").append("<p>Message successfully sent to " + response + " at " + new Date() + "</p>");
+                return console.log("Message successfully sent");
+              },
+              error: function(error, number) {
+                var object, string;
+                string = error.message;
+                object = JSON.parse(string);
+                $("#sms-error").show();
+                $("#sms-error").html("Error: " + object.message);
+                $("#error-count").html(errors++);
+                $("#message-log").append("<p class='labs-alert-danger'>Error sending to " + number + " at " + new Date() + " due to " + object.message + "</p>");
+                return console.log("cloud error: " + error.code + ": " + object.message + ", more info: " + object.more_info);
+              }
+            });
+            _results.push(i++);
+          }
+          return _results;
+        };
+      } else {
+        numbers = $("#numbers-input").val();
+        array = numbers.split(",");
+        i = 0;
+        successes = 0;
+        errors = 0;
+        _results = [];
+        while (i < array.length) {
+          Parse.Cloud.run("sendTwilioMsg", {
+            number: array[i],
+            message: message
+          }, {
+            success: function(response) {
+              $("#sms-error").hide();
+              successes++;
+              $("#success-count").html(successes);
+              $("#message-log").append("<p>Message successfully sent to " + response + " at " + new Date() + "</p>");
+              return console.log("Message successfully sent");
+            },
+            error: function(error, number) {
+              var object, string;
+              string = error.message;
+              object = JSON.parse(string);
+              $("#sms-error").show();
+              $("#sms-error").html("Error: " + object.message);
+              $("#error-count").html(errors++);
+              $("#message-log").append("<p class='labs-alert-danger'>Error sending to " + number + " at " + new Date() + " due to " + object.message + "</p>");
+              return console.log("cloud error: " + error.code + ": " + object.message + ", more info: " + object.more_info);
+            }
+          });
+          _results.push(i++);
         }
-      });
+        return _results;
+      }
     };
 
     return SendSmsView;

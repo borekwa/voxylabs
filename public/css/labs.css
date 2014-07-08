@@ -11,6 +11,19 @@ body {
 body.background {
   background: url(img/waterfall.jpg) no-repeat center center fixed;
 }
+
+.labs-alert-danger {
+  background-color: red;
+  color: white;
+}
+
+p.labs-alert-danger,
+span.labs-alert-danger {
+  font-style: normal;
+  font-weight: bold;
+  padding: 5px;
+}
+
 .btn-xs i {
   font-size: 16px;
   color: #302d68;

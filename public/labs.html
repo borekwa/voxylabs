@@ -154,15 +154,17 @@
 			<h1 class="margin-base-vertical">LingPing</h1>
 			<div class="container">
 				<p class="text-left">Send SMS messages to users.  Enter phone numbers in the input below (no dashes or other symbols), comma-separated.  Type your message in and viola</p>
-				<div class="form col-md-6 col-md-offset-3">
+				<div class="form col-md-6 col-md-offset-1">
 					<h3>Send SMS Form</h3>
-					<div class="form-group">
+					<!--<div class="form-group">
 						<label class="text-left" for="campaign-name">Campaign Name</label>
 						<input type="text" class="form-control" id="campaign-name" placeholder="Fala melhor agora">
-					</div>
+					</div>-->
+					<div id="sms-error" class="alert labs-alert-danger"></div>
 					<div class="form-group">
 						<label class="text-left" for="phone-number">Phone Number</label>
 						<textarea class="form-control" id="numbers-input" placeholder="8675309"></textarea>
+						<input type="file" id="csv-input" accept=".csv">
 					</div>
 					<div class="form-group">
 						<label class="text-left" for="sms-message-input">Message</label>
@@ -172,6 +174,12 @@
 						</span>				
 					</div>
 					<button id="send-sms-btn" class="pull-left btn btn-primary btn-large col-md-6">Send SMS</button>
+				</div>
+				<div id="message-log" class="col-md-4 help-block text-left">
+					<h6>Status</h6>
+					<div>Successes: <span id="success-count"></span></div>
+					<div>Errors: <span class="labs-alert-danger" id="error-count"></span></div>
+					<h6>Logs</h6>
 				</div>
 			</div>
 		</script>
@@ -362,6 +370,7 @@
 		<script type="text/javascript" src="http://underscorejs.org/underscore.js"></script>
 		<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.2.9.min.js"></script>
+		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.71/jquery.csv-0.71.min.js"></script>
 	
 		<!--application javascript files-->
 	 	<script type="text/javascript" src="js/models.js"></script>

@@ -390,6 +390,7 @@ class SendSmsView extends Parse.View
   render: ->
     template = _.template(@template)
     @$el.html template
+    $("#sms-error").hide()
   events: ->
     "keyup #sms-message-input":"countMsgCharacters"
     "click #send-sms-btn":"sendSms"
@@ -399,20 +400,72 @@ class SendSmsView extends Parse.View
     count = $("#sms-message-input").val().length
     $("#sms-msg-characters").text(max-count)
     $("#sms-msg-characters").css "color":"red" if max-count < 0
-    $("#sms-msg-characters").css "color":"" if max-count > 0
+    $("#sms-msg-characters").css "color":"" if max-count >= 0
   sendSms: (e) ->
     e.preventDefault()
+    confirm "Are you sure you want to send this SMS message to all specified learners?  This cannot be stopped or undone and charges will be incurred."
+    
+    file = $("#csv-input").get(0).files[0]
     message = $("#sms-message-input").val()
-    numbers = $("#numbers-input").val()
-    Parse.Cloud.run "sendTwilioMsg",
-      campaignName: "this"
-      numbers: numbers
-      message: message
-    ,
-      success: (response)->
-        console.log response
-      error: (error) ->
-        console.log "cloud error: "+error.code+": "+error.message
+    
+    if file
+      reader = new FileReader()
+      reader.readAsText file
+      reader.onload = (e) ->
+        csvArrays = $.csv.toArrays e.target.result
+        
+        i = 1
+        successes = 0
+        errors = 0
+        while i < csvArrays.length
+          number = csvArrays[i][0]
+          Parse.Cloud.run "sendTwilioMsg",
+            number: number
+            message: message
+          ,
+            success: (response) ->
+              $("#sms-error").hide()
+              successes++
+              $("#success-count").html successes 
+              $("#message-log").append "<p>Message successfully sent to "+response+" at "+new Date()+"</p>"
+              console.log "Message successfully sent"
+            error: (error, number) ->
+              string = error.message
+              object = JSON.parse string
+              $("#sms-error").show()
+              $("#sms-error").html "Error: "+object.message
+              $("#error-count").html errors++
+              $("#message-log").append "<p class='labs-alert-danger'>Error sending to "+number+" at "+new Date()+" due to "+object.message+"</p>"
+              console.log "cloud error: "+error.code+": "+object.message+", more info: "+object.more_info
+          i++
+        
+    else
+      numbers = $("#numbers-input").val()
+
+      array = numbers.split ","
+      i = 0
+      successes = 0
+      errors = 0
+      while i < array.length
+        Parse.Cloud.run "sendTwilioMsg",
+          number: array[i]
+          message: message
+        ,
+          success: (response) ->
+            $("#sms-error").hide()
+            successes++
+            $("#success-count").html successes
+            $("#message-log").append "<p>Message successfully sent to "+response+" at "+new Date()+"</p>"
+            console.log "Message successfully sent"
+          error: (error, number) ->
+            string = error.message
+            object = JSON.parse string
+            $("#sms-error").show()
+            $("#sms-error").html "Error: "+object.message
+            $("#error-count").html errors++
+            $("#message-log").append "<p class='labs-alert-danger'>Error sending to "+number+" at "+new Date()+" due to "+object.message+"</p>"
+            console.log "cloud error: "+error.code+": "+object.message+", more info: "+object.more_info
+        i++
   
 router = new Router
 Parse.history.start()

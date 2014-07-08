@@ -4,21 +4,21 @@
 
   twilio = require("twilio");
 
-  twilio.initialize("ACe109988ea9b5503ec35864f6ff6b29ef", "1e2275664405bee94472737853e2c415");
+  twilio.initialize("AC63d8a06d5b00148b5d6b76da58f3a3c7", "eadc01fbcf6742acf56eddbd9e811d32");
 
   Parse.Cloud.define("sendTwilioMsg", function(request, response) {
-    var numbers;
-    numbers = request.params.numbers;
+    var number;
+    number = request.params.number;
     return twilio.sendSMS({
-      to: numbers,
-      from: "+19177913141",
+      to: "+" + number,
+      from: "+15005550006",
       body: request.params.message
     }, {
       success: function(httpResponse) {
-        return response.success(request.params.message);
+        return response.success(number);
       },
       error: function(error, httpResponse) {
-        return response.error(error);
+        return response.error(error, number);
       }
     });
   });
